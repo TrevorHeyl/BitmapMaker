@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1562690766 source:e:\trev\projects\pcprogramming\winapps\bmpgenerator\bmpgen\main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	"bmp_gen.h"
+
+1562676465 source:e:\trev\projects\pcprogramming\winapps\bmpgenerator\bmpgen\bswap.c
+	<stdint.h>
+
+1562676452 e:\trev\projects\pcprogramming\winapps\bmpgenerator\bmpgen\bswap.h
+
+1562691313 source:e:\trev\projects\pcprogramming\winapps\bmpgenerator\bmpgen\bmp_gen.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<mem.h>
+	"bmp_gen.h"
+
+1562691391 e:\trev\projects\pcprogramming\winapps\bmpgenerator\bmpgen\bmp_gen.h
+
