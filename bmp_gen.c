@@ -26,8 +26,31 @@ MakeFilledBmpImageRGB565( "RED.bmp",200,200,imRED);
 Compatibility info:
 Tested under Windows with GNU compiler, using CodeBlocks IDE
 
+/*
+
+  Columns (X axis) are from left to right if one visualizes the pixel data as a 2D array
+  Rows are every "width" pixels, but row 0 as displayed is the last row in the pixel data file
+
 */
 
+
+void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,uint32_t yend,IBMP_COL colour) {
+
+     dib_mbpv5hdr *dib_hdr = (dib_mbpv5hdr* )(ImageData+imDIB_OFFSET);
+     uint32_t h = dib_hdr->bV5Height;
+     uint32_t w = dib_hdr->bV5Width;
+     uint16_t *PixelData = (uint16_t *)(ImageData+imPIXEL_DATA_OFFS);
+     uint32_t x,y;
+
+     uint16_t *wrpos = PixelData + (h-ystart-1)*w  ;
+     for(x=xstart;x<xend;x++) {
+        *wrpos = (uint16_t)colour;
+        wrpos++;
+     }
+
+
+
+}
 
 
 /*******************************************************
@@ -39,19 +62,21 @@ Floodfill the image data with a colour, use as a background fill
 *******************************************************/
 void  FillImage(
                 void * imagedata,
-                uint32_t size,
+                uint32_t width,
+                uint32_t height,
                 IBMP_COL colour)
 {
 
     uint16_t *wrpos = imagedata+imPIXEL_DATA_OFFS;
-    int c=size/2;
+    uint32_t h,w;
 
-    while(c) {
-        *wrpos = (uint16_t)colour;
-        wrpos++;
-        c--;
+
+    for(h=0;h<height*2;h++) {
+        for(w=0;w<width/2;w++) {
+            *wrpos = (uint16_t)colour;
+            wrpos++;
+        }
     }
-
 }
 
 /*******************************************************
@@ -120,31 +145,34 @@ Make a BMP file od specified size, filled with specified colour
     w,h width and height of image
     colour_depth in bytes (2 bytes = 16 bits for 16 bit RGB565)
 *******************************************************/
-void MakeFilledBmpImageRGB565( const char * filename,
+void MakeFilledBmpImageFileRGB565( const char * filename,
                          uint32_t w,
                          uint32_t h,
                          IBMP_COL col  )
 {
 
     uint32_t width,height,colour_depth;
-    uint32_t imData_size;
+    //uint32_t imData_size;
 
     bitmap_hdr bm_hdr;
     dib_mbpv5hdr dib_hdr;
-
-    width=w;
+#ifdef ADD_ROW_PADDING
+    width= (w/4)*4+4; // padding required for rows
+#else
+    width= w; // padding required for rows
+#endif
     height=h;
     colour_depth=2; // bytes
 
-    imData_size = width*height*colour_depth;
+    //imData_size = width*height*colour_depth;
 
-    MakeBMPHeader(&bm_hdr, w, h,colour_depth );
-    MakeDIBHeader(&dib_hdr, w, h,colour_depth );
+    MakeBMPHeader(&bm_hdr, width, height,colour_depth );
+    MakeDIBHeader(&dib_hdr, width, height,colour_depth );
 
     void *imagedata = calloc(1,width*height*colour_depth+imPIXEL_DATA_OFFS);
     memcpy(imagedata,(void *)&bm_hdr,sizeof(bm_hdr));
     memcpy((imagedata+14),(void *)&dib_hdr,sizeof(dib_hdr));
-    FillImage(imagedata,imData_size,(uint16_t)col);
+    FillImage(imagedata,width,height,(uint16_t)col);
 
     FILE *fw;
     uint32_t fsize = bm_hdr.size ;
@@ -155,6 +183,48 @@ void MakeFilledBmpImageRGB565( const char * filename,
 
     free(imagedata);
     fclose(fw);
+}
+
+
+/*******************************************************
+MakeFilledBmpImageRGB565
+Make a BMP file od specified size, filled with specified colour
+    bm_hdr supply the header structure
+    w,h width and height of image
+    colour_depth in bytes (2 bytes = 16 bits for 16 bit RGB565)
+*******************************************************/
+void * MakeFilledBmpImageRGB565(
+                         uint32_t w,
+                         uint32_t h,
+                         IBMP_COL col  )
+{
+
+    uint32_t width,height,colour_depth;
+    //uint32_t imData_size;
+
+    bitmap_hdr bm_hdr;
+    dib_mbpv5hdr dib_hdr;
+#ifdef ADD_ROW_PADDING
+    width= (w/4)*4+4; // padding required for rows
+#else
+    width= w; // padding required for rows
+#endif
+    height=h;
+    colour_depth=2; // bytes
+
+    //imData_size = width*height*colour_depth;
+
+    MakeBMPHeader(&bm_hdr, width, height,colour_depth );
+    MakeDIBHeader(&dib_hdr, width, height,colour_depth );
+
+    void *imagedata = calloc(1,width*height*colour_depth+imPIXEL_DATA_OFFS);
+    memcpy(imagedata,(void *)&bm_hdr,sizeof(bm_hdr));
+    memcpy((imagedata+14),(void *)&dib_hdr,sizeof(dib_hdr));
+    FillImage(imagedata,width,height,(uint16_t)col);
+
+    return imagedata;
+
+
 }
 
 

@@ -31,6 +31,14 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="bmp_gen.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="bmp_gen.h" />
+		<Unit filename="bswap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="bswap.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

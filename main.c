@@ -24,10 +24,34 @@ int main()
 
     printf("Demo to make some solid colour 16 bit bitmaps\n");
 
-    MakeFilledBmpImageRGB565( "RED.bmp",240, 240, imRED  );
-    MakeFilledBmpImageRGB565( "GREEN.bmp",240, 480, imGREEN  );
-    MakeFilledBmpImageRGB565( "BLUE.bmp",32, 16, imBLUE  );
-    MakeFilledBmpImageRGB565( "PURPLE.bmp",80, 80, imPURPLE  );
+    MakeFilledBmpImageFileRGB565( "RED.bmp",120, 120, imRED  );
+    MakeFilledBmpImageFileRGB565( "GREEN.bmp",240, 240, imGREEN  );
+    MakeFilledBmpImageFileRGB565( "BLUE.bmp",240, 240, imBLUE  );
+    MakeFilledBmpImageFileRGB565( "PURPLE.bmp",80, 80, imPURPLE  );
+    MakeFilledBmpImageFileRGB565( "WHITE.bmp",80, 80, imWHITE  );
+    MakeFilledBmpImageFileRGB565( "BLACK.bmp",80, 80, imBLACK  );
+    MakeFilledBmpImageFileRGB565( "GRAY.bmp",80, 80, imGRAY  );
+    MakeFilledBmpImageFileRGB565( "LIGHTGRAY.bmp",80, 80, imLGRAY  );
+
+
+    void * ImageData = MakeFilledBmpImageRGB565( 100, 100, imBLUE  );
+
+    DrawLine(ImageData,0,0,100,100,imGREEN);
+    DrawLine(ImageData,0,50,50,100,imRED);
+    DrawLine(ImageData,0,75,10,100,imBLACK);
+    //DrawLine(ImageData,0,0,100,100,imGREEN);
+
+    FILE *fw;
+    bitmap_hdr *bm_hdr = (bitmap_hdr* )ImageData;
+    uint32_t fsize = bm_hdr->size ;
+    fw = fopen("f100.bmp","wb");
+    if (!fwrite(ImageData,1,fsize,fw)) {
+        printf("Could not write file");
+    }
+
+    free(ImageData);
+    fclose(fw);
+
 
     printf("Done!");
     return 0;

@@ -1,6 +1,10 @@
 #ifndef _BMP_GEN_H_
 #define _BMP_GEN_H_
 
+
+
+//#define ADD_ROW_PADDING // make sure the row data is mutiples of 4 bytes, i.e uin32_t boundary
+#define imDIB_OFFSET 14
 #define imPIXEL_DATA_OFFS 0x8A
 #define imDIBV5FMT_SIZE 0x7C
 #define imRGBs_TYPE 0x73524742
@@ -12,12 +16,20 @@
 
 
 
-/*Solid fill colours in RGB565 format  */
+/*Solid fill colours in RGB565 format
+
+The colours ar emapped as follows:
+b15...b10
+*/
 typedef enum IBMP_COL {
     imRED = 0xf800,
-    imBLUE = 0x001f,
+    imBLUE = 0x0175,//0x001f,
     imGREEN =  0x07e0,
     imPURPLE = 0xf81f,
+    imBLACK = 0x0000,
+    imWHITE = 0xFFFF,
+    imGRAY = 0x52aa, //  01010 010101 01010
+    imLGRAY = 0x73ae, // 01110 011101 01110
 }IBMP_COL;
 
 
@@ -62,6 +74,8 @@ typedef struct dib_mbpv5hdr{
 
 
 
-void MakeFilledBmpImageRGB565( const char * filename,uint32_t w, uint32_t h, IBMP_COL col  );
+void MakeFilledBmpImageFileRGB565( const char * filename,uint32_t w, uint32_t h, IBMP_COL col  );
+void * MakeFilledBmpImageRGB565( uint32_t w, uint32_t h,  IBMP_COL col  );
+void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,uint32_t yend,IBMP_COL colour) ;
 
 #endif // _BMP_GEN_H_
