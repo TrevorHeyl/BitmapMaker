@@ -26,26 +26,53 @@ MakeFilledBmpImageRGB565( "RED.bmp",200,200,imRED);
 Compatibility info:
 Tested under Windows with GNU compiler, using CodeBlocks IDE
 
+
+*/
+void PlotPixel(void * ImageData, uint32_t x, uint32_t y,IBMP_COL colour) {
+
+     dib_mbpv5hdr *dib_hdr = (dib_mbpv5hdr* )(ImageData+imDIB_OFFSET);
+     uint32_t h = dib_hdr->bV5Height;
+     uint32_t w = dib_hdr->bV5Width;
+     uint16_t *PixelData = (uint16_t *)(ImageData+imPIXEL_DATA_OFFS);
+     //uint32_t x,y;
+
+     uint16_t *wrpos = PixelData + (h-y-1)*w + x ;
+     *wrpos = (uint16_t)colour;
+
+}
+
+
 /*
 
   Columns (X axis) are from left to right if one visualizes the pixel data as a 2D array
   Rows are every "width" pixels, but row 0 as displayed is the last row in the pixel data file
 
 */
-
-
 void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,uint32_t yend,IBMP_COL colour) {
 
-     dib_mbpv5hdr *dib_hdr = (dib_mbpv5hdr* )(ImageData+imDIB_OFFSET);
-     uint32_t h = dib_hdr->bV5Height;
-     uint32_t w = dib_hdr->bV5Width;
-     uint16_t *PixelData = (uint16_t *)(ImageData+imPIXEL_DATA_OFFS);
      uint32_t x,y;
 
-     uint16_t *wrpos = PixelData + (h-ystart-1)*w  ;
-     for(x=xstart;x<xend;x++) {
-        *wrpos = (uint16_t)colour;
-        wrpos++;
+
+     if( (xend-xstart) >= (yend-ystart) ) {
+        if( xstart > xend) {
+           for(x=xend;x<xstart;x--) {
+                y = ystart + ((yend-ystart)*(x-xstart))/(xend-xstart);
+                PlotPixel( ImageData, x, y , colour);
+           }
+
+        } else {
+           for(x=xstart;x<xend;x++) {
+                y = ystart + ((yend-ystart)*(x-xstart))/(xend-xstart);
+                PlotPixel( ImageData, x, y , colour);
+           }
+        }
+     } else {
+         for(y=ystart;y<yend;y++) {
+              x = xstart + ((xend-xstart)*(y-ystart))/(yend-ystart);
+              PlotPixel( ImageData, x, y , colour);
+         }
+
+
      }
 
 

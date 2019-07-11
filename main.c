@@ -24,23 +24,30 @@ int main()
 
     printf("Demo to make some solid colour 16 bit bitmaps\n");
 
-    MakeFilledBmpImageFileRGB565( "RED.bmp",120, 120, imRED  );
-    MakeFilledBmpImageFileRGB565( "GREEN.bmp",240, 240, imGREEN  );
-    MakeFilledBmpImageFileRGB565( "BLUE.bmp",240, 240, imBLUE  );
-    MakeFilledBmpImageFileRGB565( "PURPLE.bmp",80, 80, imPURPLE  );
-    MakeFilledBmpImageFileRGB565( "WHITE.bmp",80, 80, imWHITE  );
-    MakeFilledBmpImageFileRGB565( "BLACK.bmp",80, 80, imBLACK  );
-    MakeFilledBmpImageFileRGB565( "GRAY.bmp",80, 80, imGRAY  );
-    MakeFilledBmpImageFileRGB565( "LIGHTGRAY.bmp",80, 80, imLGRAY  );
+    //MakeFilledBmpImageFileRGB565( "RED.bmp",120, 120, imRED  );
+    //MakeFilledBmpImageFileRGB565( "GREEN.bmp",240, 240, imGREEN  );
+    //MakeFilledBmpImageFileRGB565( "BLUE.bmp",240, 240, imBLUE  );
+    //MakeFilledBmpImageFileRGB565( "PURPLE.bmp",80, 80, imPURPLE  );
+    //MakeFilledBmpImageFileRGB565( "WHITE.bmp",80, 80, imWHITE  );
+    //MakeFilledBmpImageFileRGB565( "BLACK.bmp",80, 80, imBLACK  );
+    //MakeFilledBmpImageFileRGB565( "GRAY.bmp",80, 80, imGRAY  );
+    //MakeFilledBmpImageFileRGB565( "LIGHTGRAY.bmp",80, 80, imLGRAY  );
 
 
     void * ImageData = MakeFilledBmpImageRGB565( 100, 100, imBLUE  );
 
-    DrawLine(ImageData,0,0,100,100,imGREEN);
-    DrawLine(ImageData,0,50,50,100,imRED);
-    DrawLine(ImageData,0,75,10,100,imBLACK);
-    //DrawLine(ImageData,0,0,100,100,imGREEN);
+    //DrawLine(ImageData,10,10,30,30,imGREEN);
+    //DrawLine(ImageData,10,10,30,40,imWHITE);
+    //DrawLine(ImageData,10,10,40,30,imBLACK);
+    DrawLine(ImageData,10,10,30,10,imGREEN);
+    DrawLine(ImageData,30,10,30,30,imWHITE);
+    DrawLine(ImageData,30,30,10,30,imBLACK);
 
+
+    //PlotPixel( ImageData,10,10 ,imWHITE) ;
+    //PlotPixel( ImageData,30,30 ,imWHITE) ;
+    //DrawLine(ImageData,30,50,50,100,imRED);
+    //DrawLine(ImageData,0,75,10,100,imBLACK);
     FILE *fw;
     bitmap_hdr *bm_hdr = (bitmap_hdr* )ImageData;
     uint32_t fsize = bm_hdr->size ;

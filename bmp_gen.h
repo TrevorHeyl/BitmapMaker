@@ -77,5 +77,6 @@ typedef struct dib_mbpv5hdr{
 void MakeFilledBmpImageFileRGB565( const char * filename,uint32_t w, uint32_t h, IBMP_COL col  );
 void * MakeFilledBmpImageRGB565( uint32_t w, uint32_t h,  IBMP_COL col  );
 void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,uint32_t yend,IBMP_COL colour) ;
+void PlotPixel(void * ImageData, uint32_t x, uint32_t y,IBMP_COL colour) ;
 
 #endif // _BMP_GEN_H_
