@@ -48,28 +48,59 @@ void PlotPixel(void * ImageData, uint32_t x, uint32_t y,IBMP_COL colour) {
   Rows are every "width" pixels, but row 0 as displayed is the last row in the pixel data file
 
 */
+
+/*
+
+This C implementation of the Bresenham line algorithm taken from https://github.com/miloyip/line
+
+*/
+void DrawLine(void * ImageData, uint32_t x0,uint32_t y0,uint32_t x1,uint32_t y1,IBMP_COL colour) {
+
+    int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+    int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+    int err = (dx > dy ? dx : -dy) / 2;
+
+    while (PlotPixel(ImageData,x0, y0,colour), x0 != x1 || y0 != y1) {
+        int e2 = err;
+        if (e2 > -dx) { err -= dy; x0 += sx; }
+        if (e2 <  dy) { err += dx; y0 += sy; }
+}
+
+}
+
+#if 0
 void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,uint32_t yend,IBMP_COL colour) {
 
      uint32_t x,y;
-
-
+     // Prevent missing pixels in line draw
+     // is x span longer than y span? IF so scale x/step y
      if( (xend-xstart) >= (yend-ystart) ) {
+        // are we drawing backward in x axis (xstart > xend)
         if( xstart > xend) {
-           for(x=xend;x<xstart;x--) {
+           for(x=xstart;x>=xend;x--) {
                 y = ystart + ((yend-ystart)*(x-xstart))/(xend-xstart);
                 PlotPixel( ImageData, x, y , colour);
            }
 
         } else {
-           for(x=xstart;x<xend;x++) {
+           for(x=xstart;x<=xend;x++) {
                 y = ystart + ((yend-ystart)*(x-xstart))/(xend-xstart);
                 PlotPixel( ImageData, x, y , colour);
            }
         }
+      // y span longer than x span   , so scale y span
      } else {
-         for(y=ystart;y<yend;y++) {
-              x = xstart + ((xend-xstart)*(y-ystart))/(yend-ystart);
-              PlotPixel( ImageData, x, y , colour);
+
+         if( ystart > yend) {
+             for(y=ystart;y>=yend;y--) {
+                  x = xstart + ((xend-xstart)*(y-ystart))/(yend-ystart);
+                  PlotPixel( ImageData, x, y , colour);
+             }
+         } else {
+             for(y=ystart;y<=yend;y++) {
+                  x = xstart + ((xend-xstart)*(y-ystart))/(yend-ystart);
+                  PlotPixel( ImageData, x, y , colour);
+             }
          }
 
 
@@ -78,7 +109,7 @@ void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,ui
 
 
 }
-
+#endif
 
 /*******************************************************
 FillImage

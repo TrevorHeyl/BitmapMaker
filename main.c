@@ -39,9 +39,16 @@ int main()
     //DrawLine(ImageData,10,10,30,30,imGREEN);
     //DrawLine(ImageData,10,10,30,40,imWHITE);
     //DrawLine(ImageData,10,10,40,30,imBLACK);
-    DrawLine(ImageData,10,10,30,10,imGREEN);
-    DrawLine(ImageData,30,10,30,30,imWHITE);
-    DrawLine(ImageData,30,30,10,30,imBLACK);
+    // lines to make a box
+    //DrawLine(ImageData,10,10,30,10,imGREEN);
+    //DrawLine(ImageData,30,10,30,30,imWHITE);
+    //DrawLine(ImageData,30,30,10,30,imBLACK);
+    //DrawLine(ImageData,10,30,10,10,imRED);
+    // diamond
+    DrawLine(ImageData,50,10,70,30,imGREEN);
+    DrawLine(ImageData,70,30,50,50,imWHITE);
+    DrawLine(ImageData,50,50,20,30,imBLACK);
+    DrawLine(ImageData,20,30,50,10,imRED);
 
 
     //PlotPixel( ImageData,10,10 ,imWHITE) ;
