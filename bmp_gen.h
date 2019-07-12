@@ -22,14 +22,21 @@ The colours ar emapped as follows:
 b15...b10
 */
 typedef enum IBMP_COL {
-    imRED = 0xf800,
-    imBLUE = 0x0175,//0x001f,
-    imGREEN =  0x07e0,
-    imPURPLE = 0xf81f,
-    imBLACK = 0x0000,
-    imWHITE = 0xFFFF,
-    imGRAY = 0x52aa, //  01010 010101 01010
-    imLGRAY = 0x73ae, // 01110 011101 01110
+    imBLACK     = 0x0000,
+    imWHITE     = 0xFFFF,
+    imGRAY      = 0x52aa,
+    imLGRAY     = 0x73ae,
+    imPINK      = 0xFC18,
+    imRED       = 0xf800,
+    imPURPLE    = 0xf81f,
+    imNAVY      = 0x0175,
+    imBLUE      = 0x07FF,
+    imGREEN     = 0x0400,
+    imLIME      = 0x07e0,
+    imYELLOW    = 0xFFE0,
+    imMUSTARD   = 0xB580,
+    imORANGE    = 0xFC00,
+
 }IBMP_COL;
 
 
