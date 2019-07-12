@@ -98,6 +98,66 @@ void imPlotPixel(void * ImageData, uint32_t x, uint32_t y,IBMP_COL colour) {
 
 
 
+
+void drawCircle(void * ImageData, int xc, int yc, int x,int y, IBMP_COL colour)
+{
+    imPlotPixel(ImageData,xc+x, yc+y, colour);
+    imPlotPixel(ImageData,xc-x, yc+y, colour);
+    imPlotPixel(ImageData,xc+x, yc-y, colour);
+    imPlotPixel(ImageData,xc-x, yc-y, colour);
+    imPlotPixel(ImageData,xc+y, yc+x, colour);
+    imPlotPixel(ImageData,xc-y, yc+x, colour);
+    imPlotPixel(ImageData,xc+y, yc-x, colour);
+    imPlotPixel(ImageData,xc-y, yc-x, colour);
+}
+
+void imDrawCircle_pro(void * ImageData,uint32_t xc, uint32_t yc, uint32_t r,  IBMP_COL colour)
+{
+    int x = 0, y = r;
+    int d = 3 - 2 * r;
+    drawCircle(ImageData,xc, yc, x, y,colour);
+    while (y >= x)
+    {
+        // for each pixel we will
+        // draw all eight pixels
+
+        x++;
+
+        // check for decision parameter
+        // and correspondingly
+        // update d, x, y
+        if (d > 0)
+        {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        }
+        else
+            d = d + 4 * x + 6;
+        drawCircle(ImageData,xc, yc, x, y,colour);
+
+    }
+}
+
+/*
+imDrawCircle
+    Draw a circle of specified colour and circle centre and radius
+    using Bresenham's algorithm - c implemenation form here:
+    https://www.geeksforgeeks.org/bresenhams-circle-drawing-algorithm/ article by  Shivam Pradhan
+
+*/
+
+
+void imDrawCircle(void * ImageData,uint32_t xc, uint32_t yc, uint32_t r, uint8_t thickness , IBMP_COL colour) {
+
+
+    while(thickness) {
+        imDrawCircle_pro(ImageData, xc, yc,  r-thickness,  colour);
+        thickness--;
+    }
+
+}
+
+
 /*
     imDrawRectangle
     Draws a rectangle of specified colour from a starting and ending coordinate pair.

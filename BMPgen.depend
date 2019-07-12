@@ -19,3 +19,23 @@
 
 1562779513 e:\trev\projects\pcprogramming\winapps\bmpgenerator\bmpgen\bmp_gen.h
 
+1562923233 source:d:\projects\programming\c\bmp_gen\bitmapmaker\bmp_gen.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<mem.h>
+	"bmp_gen.h"
+
+1562923225 d:\projects\programming\c\bmp_gen\bitmapmaker\bmp_gen.h
+	<stdint.h>
+	<stdbool.h>
+
+1562824104 source:d:\projects\programming\c\bmp_gen\bitmapmaker\bswap.c
+	<stdint.h>
+
+1562922961 source:d:\projects\programming\c\bmp_gen\bitmapmaker\main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	"bmp_gen.h"
+

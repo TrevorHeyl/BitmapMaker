@@ -52,6 +52,15 @@ int main()
     imSaveImage(ImageDataB,"BOXES.bmp");
     imFree(ImageDataS);
 
+    printf("Draw coloured Circles\n");
+    void * ImageDataC = imMakeFilledBmpImageRGB565( 100, 100, imBLUE  );
+    imDrawCircle(ImageDataC, 50, 50, 20, 3, imWHITE);
+    imDrawCircle(ImageDataC, 20, 20, 15, 4, imRED);
+    imDrawCircle(ImageDataC, 60, 40, 10, 1, imGREEN);
+    imSaveImage(ImageDataC,"CIRCLES.bmp");
+    imFree(ImageDataC);
+
+
     printf("Done!");
     return 0;
 }

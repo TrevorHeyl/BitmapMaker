@@ -104,11 +104,14 @@ bool imSaveImage(void * ImageData,const char * filename );
 */
 void imDrawSquare(void * ImageData, uint32_t x,uint32_t y,uint32_t width, uint32_t height,IBMP_COL colour,uint8_t thickness);
 /*
-    Draws a rectnagle of specified colour from a starting and ending coordinate pair.
+    Draws a rectangle of specified colour from a starting and ending coordinate pair.
     Speciy the width, height
 */
 void imDrawRectangle(void * ImageData, uint32_t x,uint32_t y,uint32_t width, uint32_t height,IBMP_COL colour ) ;
-
-
+/*
+    Draws a circle of specified colour from circle centre given radius.
+    Speciy the centre, radius and colour
+*/
+void imDrawCircle(void * ImageData,uint32_t xc, uint32_t yc, uint32_t r, uint8_t thickness , IBMP_COL colour);
 
 #endif // _BMP_GEN_H_
