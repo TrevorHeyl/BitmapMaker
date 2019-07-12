@@ -30,3 +30,9 @@ MakeFilledBmpImageRGB565( "RED.bmp",200,200,imRED);
 **Compatibility info:**
 Tested under Windows with GNU compiler, using CodeBlocks IDE
 
+**Samples**
+Coloured bitmaps
+![alt text](https://github.com/TrevorHeyl/BitmapMaker/RED.bmp "A Red Bitmap")
+
+
+
