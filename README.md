@@ -32,7 +32,9 @@ Tested under Windows with GNU compiler, using CodeBlocks IDE
 
 **Samples**
 Coloured bitmaps
-![alt text](https://github.com/TrevorHeyl/BitmapMaker/RED.bmp "A Red Bitmap")
-
+![Red](https://github.com/TrevorHeyl/BitmapMaker/blob/master/RED.bmp)
+![Lines](https://github.com/TrevorHeyl/BitmapMaker/blob/master/DIAMOND.bmp)
+![Boxes](https://github.com/TrevorHeyl/BitmapMaker/blob/master/BOXES.bmp)
+![Squares](https://github.com/TrevorHeyl/BitmapMaker/blob/master/SQUARES.bmp)
 
 
