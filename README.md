@@ -12,11 +12,12 @@ The BITMAPV5HEADER type is used as the DIB header spec'd here:
 * Saves files in RGB565 16 bit colour mode
 * Create any sixe image with specified background colour
 * Draw lines,Squares and Rectangles
+* Draw circles
 * Option to exclude/include padding in image pixel data
 
 **Revision History:**
 
-12 July 2019 : Added line,rectangle and square drawing
+12 July 2019 : Added line,rectangle and square drawing, added circle function
 
 9 July 2019 : First version, Generates any size BMP of 16 bit RGB565 colour format, 4 colours but many can be added
 
@@ -48,5 +49,8 @@ Coloured bitmaps
 ![Boxes](https://github.com/TrevorHeyl/BitmapMaker/blob/master/BOXES.bmp)
 
 ![Squares](https://github.com/TrevorHeyl/BitmapMaker/blob/master/SQUARES.bmp)
+
+![Circles](https://github.com/TrevorHeyl/BitmapMaker/blob/master/CIRCLES.bmp)
+
 
 
