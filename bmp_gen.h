@@ -1,9 +1,11 @@
 #ifndef _BMP_GEN_H_
 #define _BMP_GEN_H_
+#include<stdint.h>
+#include<stdbool.h>
 
-
-
+// Row padding is usually so that structure data is 4byte aligned, but for embedded system it might be useful to omit this
 //#define ADD_ROW_PADDING // make sure the row data is mutiples of 4 bytes, i.e uin32_t boundary
+
 #define imDIB_OFFSET 14
 #define imPIXEL_DATA_OFFS 0x8A
 #define imDIBV5FMT_SIZE 0x7C
@@ -12,8 +14,6 @@
 #define imRGB565_BLUEMASK 0x001f
 #define imRGB565_GREENMASK 0x07e0
 #define imPIXELS_PM 2835
-
-
 
 
 /*Solid fill colours in RGB565 format
@@ -73,10 +73,42 @@ typedef struct dib_mbpv5hdr{
 
 
 
+/*
+ Make a RGB565 16 bit bitmap image of specific size filled with a background colour and save to a file
+*/
+void imMakeFilledBmpImageFileRGB565( const char * filename,uint32_t w, uint32_t h, IBMP_COL col  );
+/*
+ Make a RGB565 16 bit bitmap image of specific size filled with a background colour
+*/
+void *imMakeFilledBmpImageRGB565( uint32_t w, uint32_t h,  IBMP_COL col  );
+/*
+ Draw a line of specific colour to specified image given starting and ending coordinates
+*/
+void imDrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,uint32_t yend,IBMP_COL colour) ;
+/*
+ Plot one pixel of specific colour to specified image given starting and ending coordinates
+*/
+void imPlotPixel(void * ImageData, uint32_t x, uint32_t y,IBMP_COL colour) ;
+/*
+ Save image data to a file
+*/
+bool imSaveImage(void * ImageData,const char * filename );
+/*
+    Release memory associated with an image
+*/
+bool imFree(void * image);
 
-void MakeFilledBmpImageFileRGB565( const char * filename,uint32_t w, uint32_t h, IBMP_COL col  );
-void * MakeFilledBmpImageRGB565( uint32_t w, uint32_t h,  IBMP_COL col  );
-void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,uint32_t yend,IBMP_COL colour) ;
-void PlotPixel(void * ImageData, uint32_t x, uint32_t y,IBMP_COL colour) ;
+bool imSaveImage(void * ImageData,const char * filename );
+/*
+    Draw a square of specified colour, given starting coordinates, width and heigth
+*/
+void imDrawSquare(void * ImageData, uint32_t x,uint32_t y,uint32_t width, uint32_t height,IBMP_COL colour,uint8_t thickness);
+/*
+    Draws a rectnagle of specified colour from a starting and ending coordinate pair.
+    Speciy the width, height
+*/
+void imDrawRectangle(void * ImageData, uint32_t x,uint32_t y,uint32_t width, uint32_t height,IBMP_COL colour ) ;
+
+
 
 #endif // _BMP_GEN_H_

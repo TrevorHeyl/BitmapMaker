@@ -6,7 +6,7 @@
 
 /*
 
-Bitmap generation utilities
+C parameteric Bitmap generation/drawing utilities
 
 Utility to genearte bitmap files according to the BMP/DIB file format (bitmap)
 The BITMAPV5HEADER type is used as the DIB header spec'd here:
@@ -19,16 +19,63 @@ Bytes 138...  Pixel array data
 
 See bmp_gen.h for the specific header format structure
 
+Also supports lines, box and rectangle drawing
+
 Use:
 Make a 200,200 red filled 16 bit RGB565 bitmap called RED.bmp
-MakeFilledBmpImageRGB565( "RED.bmp",200,200,imRED);
+imMakeFilledBmpImageRGB565( "RED.bmp",200,200,imRED);
 
 Compatibility info:
 Tested under Windows with GNU compiler, using CodeBlocks IDE
 
+*/
+
+
+/*
+    imFree
+    Release memory associated with an image
+        void * image : pointer to memory/image data to free
+*/
+bool imFree(void * image) {
+
+ if(image) {
+    free(image);
+    return true;
+ } else {
+     return false;
+ }
+}
+
+/*
+    imSaveImage
+    Save image data to a file,just a binary write. The supplied data is already in bitmap format
+    void * ImageData : Pointer to data to same
+    const char 8 filename : filename to use for saving
+*/
+bool imSaveImage(void * ImageData,const char * filename ) {
+
+    FILE *fw;
+    bitmap_hdr *bm_hdr = (bitmap_hdr* )ImageData;
+    uint32_t fsize = bm_hdr->size ;
+    fw = fopen(filename,"wb");
+    if (!fwrite(ImageData,1,fsize,fw)) {
+        return false;
+    }
+
+    //free(ImageData);
+    fclose(fw);
+    return true;
+}
+
+/*
+    imPlotPixel
+    Plot one pixel of specific colour to specified image given starting and ending coordinates
+    Handles transposing of coordinates to conceptually implement the coordinate plane where
+    (x,y) = (0,0) is the top left of the image such that the x axis increases form left to right
+    and the yaxis increases from top to bottom
 
 */
-void PlotPixel(void * ImageData, uint32_t x, uint32_t y,IBMP_COL colour) {
+void imPlotPixel(void * ImageData, uint32_t x, uint32_t y,IBMP_COL colour) {
 
      dib_mbpv5hdr *dib_hdr = (dib_mbpv5hdr* )(ImageData+imDIB_OFFSET);
      uint32_t h = dib_hdr->bV5Height;
@@ -49,18 +96,55 @@ void PlotPixel(void * ImageData, uint32_t x, uint32_t y,IBMP_COL colour) {
 
 */
 
+
+
 /*
-
-This C implementation of the Bresenham line algorithm taken from https://github.com/miloyip/line
-
+    imDrawRectangle
+    Draws a rectangle of specified colour from a starting and ending coordinate pair.
+    Speciy the width, height
 */
-void DrawLine(void * ImageData, uint32_t x0,uint32_t y0,uint32_t x1,uint32_t y1,IBMP_COL colour) {
+void imDrawRectangle(void * ImageData, uint32_t x,uint32_t y,uint32_t width, uint32_t height,IBMP_COL colour ) {
+
+    uint8_t lp;
+    for(lp=y;lp<y+height;lp++) {
+        imDrawLine(ImageData,x ,lp ,    x+width,  lp,colour);
+    }
+
+
+}
+
+
+/*
+    imDrawSquare
+    Draws a square of specified colour from a starting and ending coordinate pair.
+    Speciy the width, height and line thickness
+*/
+void imDrawSquare(void * ImageData, uint32_t x,uint32_t y,uint32_t width, uint32_t height,IBMP_COL colour, uint8_t thickness) {
+
+    uint8_t lp;
+    for(lp=0;lp<thickness;lp++) {
+        imDrawLine(ImageData,x+lp       ,y+lp       ,    x+width-lp,         y+lp,colour);
+        imDrawLine(ImageData,x+width-lp ,y+lp       ,    x+width-lp,  y+height-lp,colour);
+        imDrawLine(ImageData,x+width-lp ,y+height-lp,x+lp          ,y+height-lp  ,colour);
+        imDrawLine(ImageData,x+lp       ,y+height-lp,x+lp          ,y+lp         ,colour);
+    }
+}
+
+/*
+    imDrawLine
+    This C implementation of the Bresenham line algorithm taken from https://github.com/miloyip/line
+    Draws a line of specified colour from a starting and ending coordinate pair.
+    Handles transposing of coordinates to conceptually implement the coordinate plane where
+    (x,y) = (0,0) is the top left of the image such that the x axis increases form left to right
+    and the yaxis increases from top to bottom
+*/
+void imDrawLine(void * ImageData, uint32_t x0,uint32_t y0,uint32_t x1,uint32_t y1,IBMP_COL colour) {
 
     int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
     int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
     int err = (dx > dy ? dx : -dy) / 2;
 
-    while (PlotPixel(ImageData,x0, y0,colour), x0 != x1 || y0 != y1) {
+    while (imPlotPixel(ImageData,x0, y0,colour), x0 != x1 || y0 != y1) {
         int e2 = err;
         if (e2 > -dx) { err -= dy; x0 += sx; }
         if (e2 <  dy) { err += dx; y0 += sy; }
@@ -68,8 +152,8 @@ void DrawLine(void * ImageData, uint32_t x0,uint32_t y0,uint32_t x1,uint32_t y1,
 
 }
 
-#if 0
-void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,uint32_t yend,IBMP_COL colour) {
+#if 0 // first attempt
+void imDrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,uint32_t yend,IBMP_COL colour) {
 
      uint32_t x,y;
      // Prevent missing pixels in line draw
@@ -79,13 +163,13 @@ void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,ui
         if( xstart > xend) {
            for(x=xstart;x>=xend;x--) {
                 y = ystart + ((yend-ystart)*(x-xstart))/(xend-xstart);
-                PlotPixel( ImageData, x, y , colour);
+                imPlotPixel( ImageData, x, y , colour);
            }
 
         } else {
            for(x=xstart;x<=xend;x++) {
                 y = ystart + ((yend-ystart)*(x-xstart))/(xend-xstart);
-                PlotPixel( ImageData, x, y , colour);
+                imPlotPixel( ImageData, x, y , colour);
            }
         }
       // y span longer than x span   , so scale y span
@@ -94,12 +178,12 @@ void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,ui
          if( ystart > yend) {
              for(y=ystart;y>=yend;y--) {
                   x = xstart + ((xend-xstart)*(y-ystart))/(yend-ystart);
-                  PlotPixel( ImageData, x, y , colour);
+                  imPlotPixel( ImageData, x, y , colour);
              }
          } else {
              for(y=ystart;y<=yend;y++) {
                   x = xstart + ((xend-xstart)*(y-ystart))/(yend-ystart);
-                  PlotPixel( ImageData, x, y , colour);
+                  imPlotPixel( ImageData, x, y , colour);
              }
          }
 
@@ -111,13 +195,13 @@ void DrawLine(void * ImageData, uint32_t xstart,uint32_t ystart,uint32_t xend,ui
 }
 #endif
 
-/*******************************************************
-FillImage
-Floodfill the image data with a colour, use as a background fill
-    imagedata is the actualpixel data buffer excluding all headers
-    size is the size of the imagedata buffer
-    colour is the fill colour
-*******************************************************/
+/*
+    FillImage
+    Floodfill the image data with a colour, use as a background fill
+        imagedata is the actualpixel data buffer excluding all headers
+        size is the size of the imagedata buffer
+        colour is the fill colour
+*/
 void  FillImage(
                 void * imagedata,
                 uint32_t width,
@@ -137,13 +221,13 @@ void  FillImage(
     }
 }
 
-/*******************************************************
+/*
 MakeDIBHeader
 Populate the DIB header - we choose V5 header format
     dib_hdr supply the dib structure
     w,h width and height of image
     colour_depth in bytes (2 bytes = 16 bits for 16 bit RGB565)
-*******************************************************/
+*/
 void MakeDIBHeader(
                    dib_mbpv5hdr *dib_hdr,
                    uint32_t w,
@@ -172,13 +256,13 @@ void MakeDIBHeader(
 }
 
 
-/*******************************************************
+/*
 MakeBMPHeader
 Make the generic BMP header of 14 bytes
     bm_hdr supply the header structure
     w,h width and height of image
     colour_depth in bytes (2 bytes = 16 bits for 16 bit RGB565)
-*******************************************************/
+*/
 void  MakeBMPHeader(
                     bitmap_hdr *bm_hdr,
                     uint32_t w,
@@ -196,14 +280,14 @@ void  MakeBMPHeader(
 }
 
 
-/*******************************************************
-MakeFilledBmpImageRGB565
-Make a BMP file od specified size, filled with specified colour
+/*
+imMakeFilledBmpImageRGB565
+Make a BMP file of specified size, filled with specified colour
     bm_hdr supply the header structure
     w,h width and height of image
     colour_depth in bytes (2 bytes = 16 bits for 16 bit RGB565)
-*******************************************************/
-void MakeFilledBmpImageFileRGB565( const char * filename,
+*/
+void imMakeFilledBmpImageFileRGB565( const char * filename,
                          uint32_t w,
                          uint32_t h,
                          IBMP_COL col  )
@@ -245,13 +329,13 @@ void MakeFilledBmpImageFileRGB565( const char * filename,
 
 
 /*******************************************************
-MakeFilledBmpImageRGB565
+imMakeFilledBmpImageRGB565
 Make a BMP file od specified size, filled with specified colour
     bm_hdr supply the header structure
     w,h width and height of image
     colour_depth in bytes (2 bytes = 16 bits for 16 bit RGB565)
 *******************************************************/
-void * MakeFilledBmpImageRGB565(
+void * imMakeFilledBmpImageRGB565(
                          uint32_t w,
                          uint32_t h,
                          IBMP_COL col  )

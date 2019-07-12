@@ -5,7 +5,7 @@
 
 /*
 
-Utility to genearte bitmap files according to the BMP/DIB file format (bitmap)
+Utility to generate/draw 16bit RBG565 bitmap files according to the BMP/DIB file format (bitmap)
 The BITMAPV5HEADER type is used as the DIB header spec'd here:
 https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapv5header
 
@@ -22,50 +22,35 @@ Bytes 138...  Pixel array data
 int main()
 {
 
-    printf("Demo to make some solid colour 16 bit bitmaps\n");
+    printf("Make some solid colour 16 bit RGB565 bitmaps\n");
+    imMakeFilledBmpImageFileRGB565( "RED.bmp",120, 120, imRED  );
+    imMakeFilledBmpImageFileRGB565( "GREEN.bmp",240, 240, imGREEN  );
 
-    //MakeFilledBmpImageFileRGB565( "RED.bmp",120, 120, imRED  );
-    //MakeFilledBmpImageFileRGB565( "GREEN.bmp",240, 240, imGREEN  );
-    //MakeFilledBmpImageFileRGB565( "BLUE.bmp",240, 240, imBLUE  );
-    //MakeFilledBmpImageFileRGB565( "PURPLE.bmp",80, 80, imPURPLE  );
-    //MakeFilledBmpImageFileRGB565( "WHITE.bmp",80, 80, imWHITE  );
-    //MakeFilledBmpImageFileRGB565( "BLACK.bmp",80, 80, imBLACK  );
-    //MakeFilledBmpImageFileRGB565( "GRAY.bmp",80, 80, imGRAY  );
-    //MakeFilledBmpImageFileRGB565( "LIGHTGRAY.bmp",80, 80, imLGRAY  );
-
-
-    void * ImageData = MakeFilledBmpImageRGB565( 100, 100, imBLUE  );
-
-    //DrawLine(ImageData,10,10,30,30,imGREEN);
-    //DrawLine(ImageData,10,10,30,40,imWHITE);
-    //DrawLine(ImageData,10,10,40,30,imBLACK);
-    // lines to make a box
-    //DrawLine(ImageData,10,10,30,10,imGREEN);
-    //DrawLine(ImageData,30,10,30,30,imWHITE);
-    //DrawLine(ImageData,30,30,10,30,imBLACK);
-    //DrawLine(ImageData,10,30,10,10,imRED);
-    // diamond
-    DrawLine(ImageData,50,10,70,30,imGREEN);
-    DrawLine(ImageData,70,30,50,50,imWHITE);
-    DrawLine(ImageData,50,50,20,30,imBLACK);
-    DrawLine(ImageData,20,30,50,10,imRED);
+    printf("Make some solid colour 16 bit bitmaps with lines drawn on\n");
+    void * ImageData = imMakeFilledBmpImageRGB565( 100, 100, imBLUE  );
+    // Coloured diamond drawn from head to tail
+    imDrawLine(ImageData,50,10,70,30,imGREEN);
+    imDrawLine(ImageData,70,30,50,50,imWHITE);
+    imDrawLine(ImageData,50,50,30,30,imBLACK);
+    imDrawLine(ImageData,30,30,50,10,imRED);
+    imSaveImage(ImageData,"DIAMOND.bmp");
+    imFree(ImageData);
 
 
-    //PlotPixel( ImageData,10,10 ,imWHITE) ;
-    //PlotPixel( ImageData,30,30 ,imWHITE) ;
-    //DrawLine(ImageData,30,50,50,100,imRED);
-    //DrawLine(ImageData,0,75,10,100,imBLACK);
-    FILE *fw;
-    bitmap_hdr *bm_hdr = (bitmap_hdr* )ImageData;
-    uint32_t fsize = bm_hdr->size ;
-    fw = fopen("f100.bmp","wb");
-    if (!fwrite(ImageData,1,fsize,fw)) {
-        printf("Could not write file");
-    }
+    printf("Draw coloured squares\n");
+    void * ImageDataS = imMakeFilledBmpImageRGB565( 100, 100, imGREEN  );
+    imDrawSquare(ImageDataS,10,10,40,40,imBLACK,1);
+    imDrawSquare(ImageDataS,30,30,30,30,imBLUE,4);
+    imSaveImage(ImageDataS,"SQUARES.bmp");
+    imFree(ImageDataS);
 
-    free(ImageData);
-    fclose(fw);
 
+    printf("Draw coloured Rectangles\n");
+    void * ImageDataB = imMakeFilledBmpImageRGB565( 100, 100, imBLUE  );
+    imDrawRectangle(ImageDataB,10,10,40,40,imRED);
+    imDrawRectangle(ImageDataB,30,50,60,20,imGREEN);
+    imSaveImage(ImageDataB,"BOXES.bmp");
+    imFree(ImageDataS);
 
     printf("Done!");
     return 0;
